@@ -15,11 +15,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>("dark");
 
   useEffect(() => {
-    const saved = localStorage.getItem("theme") as Theme;
-    if (saved) {
-      setTheme(saved);
-      applyTheme(saved);
-    }
+    const saved = localStorage.getItem("theme") as Theme | null;
+    const initial = saved ?? "dark";
+    setTheme(initial);
+    applyTheme(initial);
   }, []);
 
   const applyTheme = (newTheme: Theme) => {

@@ -19,7 +19,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Om Patel - Full Stack Developer & Data Scientist",
+  title: 'Om Patel - "Software Developer"Building web apps, exploring ML & data ',
   description: "Portfolio of Om Patel - Full Stack Developer, Data Scientist, and ML Engineer",
   keywords: ["Om Patel", "Full Stack Developer", "Data Scientist", "Machine Learning", "Portfolio"],
   authors: [{ name: "Om Patel" }],
@@ -36,7 +36,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${spaceGrotesk.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`dark ${inter.variable} ${spaceGrotesk.variable}`}>
       <body className={inter.className}>
         <ThemeProvider>
           <BackgroundCanvas />

@@ -114,12 +114,12 @@ export default function Hero() {
           >
             <TypeAnimation
               sequence={[
-                "Data Scientist",
+                "I build web apps.",
                 2000,
-                "Full Stack Developer",
+                "I explore machine learning.",
                 2000,
-                "ML Engineer",
-                2000
+                "I work with data.",
+                2000,
               ]}
               wrapper="span"
               speed={50}
