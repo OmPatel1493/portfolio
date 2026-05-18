@@ -23,7 +23,7 @@ export default function ContactSection() {
           trigger: ".contact-title",
           start: "top 80%",
           end: "bottom 20%",
-          toggleActions: "play reverse play reverse",
+          toggleActions: "play none none none",
         },
         opacity: 0,
         y: 50,
@@ -36,7 +36,7 @@ export default function ContactSection() {
           trigger: ".contact-form",
           start: "top 80%",
           end: "bottom 20%",
-          toggleActions: "play reverse play reverse",
+          toggleActions: "play none none none",
         },
         opacity: 0,
         x: -100,
@@ -49,7 +49,7 @@ export default function ContactSection() {
           trigger: ".contact-info",
           start: "top 80%",
           end: "bottom 20%",
-          toggleActions: "play reverse play reverse",
+          toggleActions: "play none none none",
         },
         opacity: 0,
         x: 100,
@@ -147,17 +147,17 @@ export default function ContactSection() {
                   <Mail className="w-6 h-6 text-primary-600 dark:text-primary-400 mr-4" />
                   <div>
                     <div className="font-medium text-gray-900 dark:text-white">Email</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">contact@example.com</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">omp14903@example.com</div>
                   </div>
                 </a>
-                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="flex items-center p-4 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                <a href="https://www.linkedin.com/in/ompatel777/" target="_blank" rel="noopener noreferrer" className="flex items-center p-4 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
                   <Linkedin className="w-6 h-6 text-primary-600 dark:text-primary-400 mr-4" />
                   <div>
                     <div className="font-medium text-gray-900 dark:text-white">LinkedIn</div>
                     <div className="text-sm text-gray-600 dark:text-gray-400">Connect with me</div>
                   </div>
                 </a>
-                <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="flex items-center p-4 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                <a href="https://github.com/OmPatel1493" target="_blank" rel="noopener noreferrer" className="flex items-center p-4 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
                   <Github className="w-6 h-6 text-primary-600 dark:text-primary-400 mr-4" />
                   <div>
                     <div className="font-medium text-gray-900 dark:text-white">GitHub</div>

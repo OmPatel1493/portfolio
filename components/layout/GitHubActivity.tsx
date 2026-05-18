@@ -1,58 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Code2 } from "lucide-react";
 
+const LEARNING = "PyTorch";
+
+const WORKING_ON = {
+  name: "Portfolio",
+  url: "https://github.com/OmPatel1493/portfolio",
+};
+
 export default function GitHubActivity() {
-  const [activity, setActivity] = useState<string>("");
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchActivity = async () => {
-      try {
-        const username = "OmPatel1493";
-        const res = await fetch(`https://api.github.com/users/${username}/events/public?per_page=5`);
-        const data = await res.json();
-        
-        if (data && data.length > 0) {
-          for (const event of data) {
-            let message = "";
-            
-            if (event.type === "PushEvent" && event.payload?.commits?.[0]?.message) {
-              message = event.payload.commits[0].message;
-              if (message.length > 50) message = message.substring(0, 50) + "...";
-              setActivity(message);
-              break;
-            } else if (event.type === "CreateEvent") {
-              message = `Created ${event.payload.ref_type}: ${event.payload.ref || ""}`;
-              setActivity(message);
-              break;
-            } else if (event.type === "IssuesEvent") {
-              message = `${event.payload.action} an issue`;
-              setActivity(message);
-              break;
-            }
-          }
-          
-          if (!activity) {
-            setActivity("Building something cool");
-          }
-        } else {
-          setActivity("Building something cool");
-        }
-      } catch (error) {
-        setActivity("Building something cool");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchActivity();
-  }, []);
-
-  if (loading || !activity) return null;
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -61,9 +19,21 @@ export default function GitHubActivity() {
     >
       <div className="flex items-start space-x-2">
         <Code2 className="w-4 h-4 text-primary-600 mt-0.5 flex-shrink-0" />
-        <div className="text-xs">
+        <div className="text-xs flex-1">
+          <div className="text-gray-500 dark:text-gray-400">Currently learning:</div>
+          <div className="text-gray-900 dark:text-white font-medium mt-1">{LEARNING}</div>
+
+          <div className="h-px w-32 bg-gray-200 dark:bg-gray-700 my-3" />
+
           <div className="text-gray-500 dark:text-gray-400">Currently working on:</div>
-          <div className="text-gray-900 dark:text-white font-medium mt-1">{activity}</div>
+          <a
+            href={WORKING_ON.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block mt-1 font-medium text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+          >
+            {WORKING_ON.name}
+          </a>
         </div>
       </div>
     </motion.div>
