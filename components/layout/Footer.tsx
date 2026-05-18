@@ -35,7 +35,7 @@ export default function Footer() {
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Connect</h3>
             <div className="flex space-x-4">
               <a
-                href="https://github.com"
+                href="https://github.com/OmPatel1493"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-lg bg-gray-200 dark:bg-gray-800 hover:bg-primary-600 hover:text-white dark:hover:bg-primary-600 transition-colors"
@@ -44,7 +44,7 @@ export default function Footer() {
                 <Github className="w-5 h-5" />
               </a>
               <a
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/in/ompatel777/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-lg bg-gray-200 dark:bg-gray-800 hover:bg-primary-600 hover:text-white dark:hover:bg-primary-600 transition-colors"
@@ -53,7 +53,7 @@ export default function Footer() {
                 <Linkedin className="w-5 h-5" />
               </a>
               <a
-                href="mailto:contact@example.com"
+                href="mailto:omp14903@gmail.com"
                 className="p-2 rounded-lg bg-gray-200 dark:bg-gray-800 hover:bg-primary-600 hover:text-white dark:hover:bg-primary-600 transition-colors"
                 aria-label="Email"
               >
