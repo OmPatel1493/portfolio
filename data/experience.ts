@@ -11,31 +11,18 @@ export interface Experience {
 export const experiences: Experience[] = [
   {
     id: "exp-1",
-    company: "Tech Company",
-    position: "Software Engineering Intern",
-    duration: "Jun 2023 - Aug 2023",
-    location: "Remote",
-    description: [
-      "Developed and deployed full-stack web applications using React and Node.js",
-      "Implemented RESTful APIs and integrated third-party services",
-      "Collaborated with cross-functional teams in Agile environment",
-      "Improved application performance by 40% through optimization"
-    ],
-    techStack: ["React", "Node.js", "MongoDB", "AWS"]
-  },
-  {
-    id: "exp-2",
-    company: "Data Analytics Firm",
+    company: "Bharti Soft Tech Private Limited",
     position: "Data Science Intern",
-    duration: "Jan 2023 - May 2023",
-    location: "Hybrid",
+    duration: "December 2024 – March 2025",
+    location: "India",
     description: [
-      "Built machine learning models for predictive analytics",
-      "Performed data cleaning, preprocessing, and feature engineering",
-      "Created interactive dashboards for data visualization",
-      "Achieved 92% accuracy on classification tasks"
+      "Collaborated with a senior team member to extract, process, and manage data from external APIs and web sources for business reporting and analytical requirements.",
+      "Performed data cleaning, transformation, and refinement to ensure accuracy, consistency, and usability of datasets before visualization and analysis.",
+      "Designed and developed interactive HR dashboards with live data updates, enabling efficient tracking of employee and operational status metrics.",
+      "Built Power BI dashboards for sales analysis and reporting by abstracting complex datasets into meaningful visual insights to support data-driven decision-making.",
+      "Supported team operations by documenting processes and ensuring accurate data handling using computer-based tools and analytical techniques."
     ],
-    techStack: ["Python", "Pandas", "Scikit-learn", "Tableau"]
+    techStack: ["Python", "SQL", "REST APIs","ETL Pipeline","Power BI", "Excel"]
   }
 ];
 
@@ -52,15 +39,20 @@ export interface Education {
 export const education: Education[] = [
   {
     id: "edu-1",
-    institution: "University Name",
+    institution: "Concordia University, Montreal, QC",
+    degree: "Master of Science",
+    field: "Computer Science",
+    duration: "2026 - 2027 (Expected)"
+  },
+  {
+    id: "edu-2",
+    institution: "Parul University, Vadodara, India",
     degree: "Bachelor of Technology",
     field: "Computer Science",
     duration: "2021 - 2025",
     gpa: "8.31/10",
     achievements: [
-      "Dean's List for Academic Excellence",
-      "Published research paper on Machine Learning",
-      "Led university coding club"
+      "Relevant Courses: Python, C++, Data Structures, Database Topics, Algorithm Design, Machine Learning"
     ]
   }
 ];
