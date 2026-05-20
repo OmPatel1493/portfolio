@@ -14,6 +14,7 @@ const navItems = [
   { name: "About", path: "#about" },
   { name: "Experience", path: "#experience" },
   { name: "Projects", path: "#projects" },
+  { name: "Skills", path: "#skills" },
   { name: "Contact", path: "#contact" }
 ];
 
@@ -21,11 +22,31 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [showTerminal, setShowTerminal] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
   const pathname = usePathname();
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
+    const sectionIds = navItems.map((item) => item.path.replace("#", ""));
+
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+
+      const viewportCenter = window.scrollY + window.innerHeight / 2;
+      let current = sectionIds[0];
+      for (const id of sectionIds) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        if (el.offsetTop <= viewportCenter) {
+          current = id;
+        } else {
+          break;
+        }
+      }
+      setActiveSection(current);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -44,19 +65,27 @@ export default function Navbar() {
             </Link>
 
             <div className="hidden md:flex items-center space-x-8">
-              {navItems.map((item) => (
-                <a
-                  key={item.path}
-                  href={item.path}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document.querySelector(item.path)?.scrollIntoView({ behavior: "smooth" });
-                  }}
-                  className="text-sm font-medium transition-colors text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400"
-                >
-                  {item.name}
-                </a>
-              ))}
+              {navItems.filter((item) => item.name !== "Home").map((item) => {
+                const isActive = activeSection === item.path.replace("#", "");
+                return (
+                  <a
+                    key={item.path}
+                    href={item.path}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      document.querySelector(item.path)?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                    className={cn(
+                      "text-sm font-medium transition-colors hover:text-primary-600 dark:hover:text-primary-400",
+                      isActive
+                        ? "text-primary-600 dark:text-primary-400"
+                        : "text-gray-700 dark:text-gray-300"
+                    )}
+                  >
+                    {item.name}
+                  </a>
+                );
+              })}
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setShowTerminal(true)}
@@ -99,20 +128,28 @@ export default function Navbar() {
             className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800"
           >
             <div className="px-4 py-4 space-y-3">
-              {navItems.map((item) => (
-                <a
-                  key={item.path}
-                  href={item.path}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setIsOpen(false);
-                    document.querySelector(item.path)?.scrollIntoView({ behavior: "smooth" });
-                  }}
-                  className="block px-4 py-2 rounded-lg text-sm font-medium transition-colors text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                >
-                  {item.name}
-                </a>
-              ))}
+              {navItems.map((item) => {
+                const isActive = activeSection === item.path.replace("#", "");
+                return (
+                  <a
+                    key={item.path}
+                    href={item.path}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsOpen(false);
+                      document.querySelector(item.path)?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                    className={cn(
+                      "block px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                      isActive
+                        ? "text-violet-600 dark:text-violet-400 bg-violet-500/10"
+                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                    )}
+                  >
+                    {item.name}
+                  </a>
+                );
+              })}
             </div>
           </motion.div>
         )}
