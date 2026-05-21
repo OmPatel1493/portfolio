@@ -7,7 +7,6 @@ import ChatWidget from "@/components/layout/ChatWidget";
 import GitHubActivity from "@/components/layout/GitHubActivity";
 import EasterEgg from "@/components/layout/EasterEgg";
 import LoadingScreen from "@/components/layout/LoadingScreen";
-import ScrollProgress from "@/components/layout/ScrollProgress";
 import BackgroundCanvas from "@/components/ui/BackgroundCanvas";
 import { ThemeProvider } from "@/lib/ThemeContext";
 
@@ -41,7 +40,6 @@ export default function RootLayout({
         <ThemeProvider>
           <BackgroundCanvas />
           <LoadingScreen />
-          <ScrollProgress />
           <Navbar />
           <main className="min-h-screen">{children}</main>
           <Footer />
