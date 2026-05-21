@@ -12,28 +12,16 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("dark");
+  const [theme] = useState<Theme>("dark");
 
   useEffect(() => {
-    const saved = localStorage.getItem("theme") as Theme | null;
-    const initial = saved ?? "dark";
-    setTheme(initial);
-    applyTheme(initial);
+    document.documentElement.classList.remove("light", "neon");
+    document.documentElement.classList.add("dark");
+    localStorage.setItem("theme", "dark");
   }, []);
 
-  const applyTheme = (newTheme: Theme) => {
-    document.documentElement.classList.remove("dark", "light", "neon");
-    document.documentElement.classList.add(newTheme);
-    localStorage.setItem("theme", newTheme);
-  };
-
-  const handleSetTheme = (newTheme: Theme) => {
-    setTheme(newTheme);
-    applyTheme(newTheme);
-  };
-
   return (
-    <ThemeContext.Provider value={{ theme, setTheme: handleSetTheme }}>
+    <ThemeContext.Provider value={{ theme, setTheme: () => {} }}>
       {children}
     </ThemeContext.Provider>
   );

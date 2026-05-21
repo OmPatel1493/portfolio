@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { Menu, X, Terminal as TerminalIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import ThemeSwitcher from "@/components/layout/ThemeSwitcher";
 import { Terminal } from "@/components/terminal/Terminal";
 
 const navItems = [
@@ -23,7 +22,40 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [showTerminal, setShowTerminal] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
+  const [showHint, setShowHint] = useState(false);
+  const [terminalEverOpened, setTerminalEverOpened] = useState(false);
   const pathname = usePathname();
+
+  useEffect(() => {
+    if (terminalEverOpened) return;
+
+    let idleTimer: ReturnType<typeof setTimeout>;
+
+    const resetIdleTimer = () => {
+      setShowHint(false);
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => setShowHint(true), 3000);
+    };
+
+    window.addEventListener("mousemove", resetIdleTimer);
+    window.addEventListener("touchstart", resetIdleTimer);
+    window.addEventListener("keydown", resetIdleTimer);
+
+    resetIdleTimer();
+
+    return () => {
+      clearTimeout(idleTimer);
+      window.removeEventListener("mousemove", resetIdleTimer);
+      window.removeEventListener("touchstart", resetIdleTimer);
+      window.removeEventListener("keydown", resetIdleTimer);
+    };
+  }, [terminalEverOpened]);
+
+  const openTerminal = () => {
+    setShowTerminal(true);
+    setTerminalEverOpened(true);
+    setShowHint(false);
+  };
 
   useEffect(() => {
     const sectionIds = navItems.map((item) => item.path.replace("#", ""));
@@ -86,29 +118,35 @@ export default function Navbar() {
                   </a>
                 );
               })}
-              <div className="flex items-center space-x-2">
+              <div className="relative flex items-center">
                 <button
-                  onClick={() => setShowTerminal(true)}
+                  onClick={openTerminal}
                   className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                   aria-label="Open Terminal"
                   type="button"
                 >
                   <TerminalIcon className="w-5 h-5" />
                 </button>
-                <ThemeSwitcher />
+                {showHint && (
+                  <div className="absolute top-full right-0 mt-2 pointer-events-none animate-fade-in">
+                    <div className="relative px-3 py-1.5 rounded-lg bg-amber-500 text-gray-900 text-xs font-medium shadow-lg whitespace-nowrap">
+                      try me
+                      <div className="absolute -top-1 right-4 w-2 h-2 rotate-45 bg-amber-500" />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
             <div className="md:hidden flex items-center space-x-2">
               <button
-                onClick={() => setShowTerminal(true)}
+                onClick={openTerminal}
                 className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 aria-label="Open Terminal"
                 type="button"
               >
                 <TerminalIcon className="w-5 h-5" />
               </button>
-              <ThemeSwitcher />
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
@@ -142,7 +180,7 @@ export default function Navbar() {
                     className={cn(
                       "block px-4 py-2 rounded-lg text-sm font-medium transition-colors",
                       isActive
-                        ? "text-violet-600 dark:text-violet-400 bg-violet-500/10"
+                        ? "text-amber-600 dark:text-amber-400 bg-amber-500/10"
                         : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                     )}
                   >
