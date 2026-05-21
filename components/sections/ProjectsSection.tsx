@@ -24,7 +24,7 @@ export default function ProjectsSection() {
           trigger: ".projects-title",
           start: "top 80%",
           end: "top top",
-          toggleActions: "play none none reverse",
+          toggleActions: "play none none none",
         },
         opacity: 0,
         scale: 0.5,
@@ -75,7 +75,7 @@ export default function ProjectsSection() {
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 relative z-10">
         <div className="projects-title text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-primary-400 dark:to-teal-400 mb-4">
+          <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight uppercase text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-400 dark:from-white dark:to-gray-500 mb-4">
             Projects
           </h2>
           <p className="projects-reveal-text text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8" style={{ clipPath: "inset(0 100% 0 0)" }}>

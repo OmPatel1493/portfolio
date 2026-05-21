@@ -175,7 +175,7 @@ export function Terminal({ onClose }: { onClose: () => void }) {
                 : line.type === "error"
                 ? "text-red-400"
                 : line.type === "success"
-                ? "text-blue-400"
+                ? "text-amber-400"
                 : "text-gray-300"
             }`}
           >

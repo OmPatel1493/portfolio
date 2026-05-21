@@ -15,7 +15,7 @@ export default function ParticleBackground() {
             "radial-gradient(ellipse at center, black 40%, transparent 85%)",
         }}
       />
-      <div className="aurora-glow absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] rounded-full bg-violet-400/15 dark:bg-violet-500/10 blur-3xl" />
+      <div className="aurora-glow absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] rounded-full bg-amber-400/15 dark:bg-amber-500/10 blur-3xl" />
     </div>
   );
 }

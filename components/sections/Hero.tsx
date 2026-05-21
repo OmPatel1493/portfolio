@@ -109,7 +109,7 @@ export default function Hero() {
 
           <div
             ref={subtitleRef}
-            className="text-3xl md:text-5xl font-bold tracking-tight mb-8 h-20 text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-cyan-500 dark:from-violet-400 dark:to-cyan-300"
+            className="text-3xl md:text-5xl font-bold tracking-tight mb-8 h-20 text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-amber-300 dark:from-amber-400 dark:to-amber-200"
             style={{ fontFamily: "var(--font-space-grotesk), sans-serif" }}
           >
             <TypeAnimation

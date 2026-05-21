@@ -10,7 +10,7 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
     const variants = {
       default: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300",
       primary: "bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-300",
-      secondary: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
+      secondary: "bg-amber-100/60 text-amber-900 dark:bg-amber-900/30 dark:text-amber-200",
       success: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
     };
     

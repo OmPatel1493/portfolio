@@ -18,8 +18,8 @@ export default function BackgroundCanvas() {
             "radial-gradient(ellipse at center, black 35%, transparent 90%)",
         }}
       />
-      <div className="absolute top-[20%] left-[15%] w-[40vw] h-[40vw] rounded-full bg-violet-400/10 dark:bg-violet-500/10 blur-3xl" />
-      <div className="absolute bottom-[15%] right-[10%] w-[40vw] h-[40vw] rounded-full bg-cyan-300/10 dark:bg-cyan-500/8 blur-3xl" />
+      <div className="absolute top-[20%] left-[15%] w-[40vw] h-[40vw] rounded-full bg-amber-400/10 dark:bg-amber-500/10 blur-3xl" />
+      <div className="absolute bottom-[15%] right-[10%] w-[40vw] h-[40vw] rounded-full bg-amber-300/8 dark:bg-amber-600/8 blur-3xl" />
     </div>
   );
 }

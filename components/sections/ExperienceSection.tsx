@@ -78,7 +78,7 @@ export default function ExperienceSection() {
     <div ref={sectionRef} className="min-h-screen py-20 relative">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-white relative z-10">
         <div className="experience-title text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-primary-400 dark:to-emerald-400 mb-4">
+          <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight uppercase text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-400 dark:from-white dark:to-gray-500 mb-4">
             Experience
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
