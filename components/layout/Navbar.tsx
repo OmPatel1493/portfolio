@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
+import { gsap } from "gsap";
 import { Menu, X, Terminal as TerminalIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Terminal } from "@/components/terminal/Terminal";
@@ -25,6 +26,17 @@ export default function Navbar() {
   const [showHint, setShowHint] = useState(false);
   const [terminalEverOpened, setTerminalEverOpened] = useState(false);
   const pathname = usePathname();
+  const logoRef = useRef<HTMLAnchorElement>(null);
+
+  const handleLogoHover = () => {
+    if (!logoRef.current) return;
+    const letters = logoRef.current.querySelectorAll(".logo-letter");
+    gsap.fromTo(
+      letters,
+      { y: 8, opacity: 0 },
+      { y: 0, opacity: 1, stagger: 0.04, duration: 0.4, ease: "power2.out", overwrite: true }
+    );
+  };
 
   useEffect(() => {
     if (terminalEverOpened) return;
@@ -92,8 +104,21 @@ export default function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <Link href="/" className="text-2xl font-bold text-primary-600 dark:text-primary-400">
-              OP
+            <Link
+              ref={logoRef}
+              href="/"
+              onMouseEnter={handleLogoHover}
+              className="font-mono text-lg tracking-tight text-white"
+              aria-label="Om Patel — Home"
+            >
+              <span className="logo-letter inline-block text-amber-500">&lt;</span>
+              {"OmPatel".split("").map((char, i) => (
+                <span key={`name-${i}`} className="logo-letter inline-block">
+                  {char}
+                </span>
+              ))}
+              <span className="logo-letter inline-block text-amber-500">/</span>
+              <span className="logo-letter inline-block text-amber-500">&gt;</span>
             </Link>
 
             <div className="hidden md:flex items-center space-x-8">
