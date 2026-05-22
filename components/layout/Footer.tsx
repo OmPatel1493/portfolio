@@ -1,4 +1,4 @@
-import { Github, Linkedin } from "lucide-react";
+import { Github, Linkedin, Mail } from "lucide-react";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -11,14 +11,14 @@ export default function Footer() {
             Om Patel
           </h2>
 
-          <a
-            href="mailto:omp14903@gmail.com"
-            className="inline-block mt-10 text-gray-900 dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
-          >
-            omp14903@gmail.com
-          </a>
-
-          <div className="mt-8 flex items-center justify-center gap-8">
+          <div className="mt-10 flex items-center justify-center gap-8">
+            <a
+              href="mailto:omp14903@gmail.com"
+              className="inline-flex items-center gap-2 text-gray-900 dark:text-white hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
+            >
+              <Mail className="w-5 h-5" />
+              <span>Email</span>
+            </a>
             <a
               href="https://www.linkedin.com/in/ompatel777/"
               target="_blank"
