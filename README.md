@@ -2,18 +2,6 @@
 
 A modern, production-ready portfolio website built with Next.js 14, TailwindCSS, and Framer Motion.
 
-## Features
-
-- 🎨 Beautiful, responsive design with dark/light mode
-- 🤖 AI-powered chatbot using Anthropic Claude API
-- 📊 Live GitHub stats integration
-- 🎭 Custom animated cursor
-- 📱 Mobile-first responsive design
-- ⚡ Fast page loads with Next.js App Router
-- 🎬 Smooth animations with Framer Motion
-- 📧 Functional contact form
-- 🔍 SEO optimized
-
 ## Tech Stack
 
 - **Framework:** Next.js 14 (App Router)
