@@ -68,16 +68,20 @@ export default function Hero() {
       // Set initial opacity to 1 after animation
       gsap.set([subtitleRef.current, descRef.current, buttonsRef.current], { opacity: 1 });
 
-      // Name scale on scroll
-      gsap.to(titleRef.current, {
-        scale: 2,
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 1,
-        },
-      });
+      const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+
+      // Name scale on scroll — desktop only (avoids mobile lag + horizontal overflow)
+      if (isDesktop) {
+        gsap.to(titleRef.current, {
+          scale: 2,
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: "top top",
+            end: "bottom top",
+            scrub: 1,
+          },
+        });
+      }
 
       // Fade out other content on scroll
       gsap.to([subtitleRef.current, descRef.current, buttonsRef.current], {
@@ -95,7 +99,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section ref={heroRef} className="min-h-screen flex items-center justify-center relative">
+    <section ref={heroRef} className="min-h-screen flex items-center justify-center relative overflow-hidden">
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
         <div className="text-center">

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
@@ -27,6 +27,13 @@ export const metadata: Metadata = {
     description: "Portfolio showcasing projects and experience in web development and data science",
     type: "website",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
