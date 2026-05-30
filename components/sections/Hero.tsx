@@ -4,8 +4,8 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TypeAnimation } from "react-type-animation";
-import { Download, ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { Download, ArrowRight, Github, Linkedin } from "lucide-react";
+import { motion } from "framer-motion";
 import Button from "@/components/ui/Button";
 
 if (typeof window !== "undefined") {
@@ -114,11 +114,11 @@ export default function Hero() {
           >
             <TypeAnimation
               sequence={[
-                "I build web apps.",
-                2000,
-                "I explore machine learning.",
+                "I build full-stack apps.",
                 2000,
                 "I work with data.",
+                2000,
+                "I ship things that work.",
                 2000,
               ]}
               wrapper="span"
@@ -129,9 +129,9 @@ export default function Hero() {
 
           <p
             ref={descRef}
-            className="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-12 max-w-2xl mx-auto"
+            className="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-12 max-w-2xl mx-auto font-mono"
           >
-            Passionate about building innovative solutions with cutting-edge technologies
+            <span className="text-amber-500">$</span> whoami &mdash; full-stack developer &amp; ML tinkerer, shipping clean code from Montreal.
           </p>
 
           <div
@@ -151,6 +151,32 @@ export default function Hero() {
               </Button>
             </a>
           </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1.1, ease: "easeOut" }}
+            className="mt-8 flex items-center justify-center gap-4"
+          >
+            <a
+              href="https://www.linkedin.com/in/ompatel777/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 text-gray-300 hover:border-amber-500 hover:text-amber-500 transition-colors"
+            >
+              <Linkedin size={22} />
+            </a>
+            <a
+              href="https://github.com/OmPatel1493"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 text-gray-300 hover:border-amber-500 hover:text-amber-500 transition-colors"
+            >
+              <Github size={22} />
+            </a>
+          </motion.div>
         </div>
       </div>
     </section>
