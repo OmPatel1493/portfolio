@@ -15,7 +15,35 @@ if (typeof window !== "undefined") {
 export default function ProjectsSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  useEffect(() => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+
+    const update = () => {
+      const { scrollLeft, scrollWidth, clientWidth } = el;
+      setCanScrollLeft(scrollLeft > 4);
+      setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 4);
+    };
+
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      el.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, []);
+
+  const scrollBy = (dir: 1 | -1) => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * el.clientWidth * 0.85, behavior: "smooth" });
+  };
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -44,7 +72,9 @@ export default function ProjectsSection() {
         duration: 1,
       });
 
-      if (carouselRef.current && sectionRef.current) {
+      const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+
+      if (isDesktop && carouselRef.current && sectionRef.current) {
         const carousel = carouselRef.current;
         const cardWidth = 380 + 32;
         const margin = 64;
@@ -84,16 +114,38 @@ export default function ProjectsSection() {
         </div>
       </div>
 
-      <div className="relative h-[500px] flex items-center overflow-hidden">
-        <div className={`absolute left-4 z-10 p-3 bg-white dark:bg-gray-800/80 dark:backdrop-blur-md dark:border dark:border-gray-700/50 rounded-full shadow-lg transition-opacity ${currentIndex === 0 ? 'opacity-30' : 'opacity-100'}`}>
+      <div className="relative h-[500px]">
+        {canScrollLeft && (
+          <button
+            onClick={() => scrollBy(-1)}
+            aria-label="Previous project"
+            className="md:hidden absolute left-3 top-1/2 -translate-y-1/2 z-20 p-2 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border border-gray-200 dark:border-gray-700/50 rounded-full shadow-lg"
+          >
+            <ChevronLeft className="w-5 h-5 text-gray-900 dark:text-gray-200" />
+          </button>
+        )}
+        {canScrollRight && (
+          <button
+            onClick={() => scrollBy(1)}
+            aria-label="Next project"
+            className="md:hidden absolute right-3 top-1/2 -translate-y-1/2 z-20 p-2 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border border-gray-200 dark:border-gray-700/50 rounded-full shadow-lg"
+          >
+            <ChevronRight className="w-5 h-5 text-gray-900 dark:text-gray-200" />
+          </button>
+        )}
+        <div className={`hidden md:block absolute left-4 top-1/2 -translate-y-1/2 z-10 p-3 bg-white dark:bg-gray-800/80 dark:backdrop-blur-md dark:border dark:border-gray-700/50 rounded-full shadow-lg transition-opacity ${currentIndex === 0 ? 'opacity-30' : 'opacity-100'}`}>
           <ChevronLeft className="w-6 h-6 text-gray-900 dark:text-gray-200" />
         </div>
-        
-        <div ref={carouselRef} className="flex gap-8 pl-16 py-4">
+        <div className={`hidden md:block absolute right-4 top-1/2 -translate-y-1/2 z-10 p-3 bg-white dark:bg-gray-800/80 dark:backdrop-blur-md dark:border dark:border-gray-700/50 rounded-full shadow-lg transition-opacity ${currentIndex === projects.length - 1 ? 'opacity-30' : 'opacity-100'}`}>
+          <ChevronRight className="w-6 h-6 text-gray-900 dark:text-gray-200" />
+        </div>
+
+        <div ref={scrollContainerRef} className="h-full flex items-center overflow-x-auto md:overflow-hidden snap-x snap-mandatory md:snap-none no-scrollbar">
+        <div ref={carouselRef} className="flex gap-4 md:gap-8 px-4 md:pl-16 md:pr-0 py-4">
           {projects.map((project) => (
             <div
               key={project.id}
-              className="flex-shrink-0 w-[380px] h-[450px] bg-white dark:bg-gray-800/60 dark:backdrop-blur-xl rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700/50 p-6 flex flex-col group overflow-hidden transition-colors hover:dark:border-primary-500/50 hover:dark:bg-gray-800/80"
+              className="snap-center flex-shrink-0 w-[85vw] sm:w-[380px] h-[450px] bg-white dark:bg-gray-800/60 dark:backdrop-blur-xl rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700/50 p-6 flex flex-col group overflow-hidden transition-colors hover:dark:border-primary-500/50 hover:dark:bg-gray-800/80"
             >
               {project.image && (
                 <div className="w-full h-48 mb-4 rounded-lg overflow-hidden border dark:border-gray-700/50">
@@ -160,9 +212,6 @@ export default function ProjectsSection() {
             </div>
           ))}
         </div>
-
-        <div className={`absolute right-4 z-10 p-3 bg-white dark:bg-gray-800/80 dark:backdrop-blur-md dark:border dark:border-gray-700/50 rounded-full shadow-lg transition-opacity ${currentIndex === projects.length - 1 ? 'opacity-30' : 'opacity-100'}`}>
-          <ChevronRight className="w-6 h-6 text-gray-900 dark:text-gray-200" />
         </div>
       </div>
     </div>
