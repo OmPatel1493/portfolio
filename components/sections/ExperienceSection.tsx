@@ -87,7 +87,7 @@ export default function ExperienceSection() {
         </div>
 
         <div className="relative">
-          <div className="timeline-line absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700" />
+          <div className="timeline-line absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700 hidden md:block" />
           <Timeline items={timelineItems} />
         </div>
       </div>

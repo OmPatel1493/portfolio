@@ -23,7 +23,7 @@ interface TimelineProps {
 export default function Timeline({ items }: TimelineProps) {
   return (
     <div className="relative">
-      <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700" />
+      <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700 hidden md:block" />
 
       {items.map((item, index) => (
         <motion.div
@@ -32,9 +32,9 @@ export default function Timeline({ items }: TimelineProps) {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ delay: index * 0.1 }}
-          className="relative pl-20 pb-12 last:pb-0"
+          className="relative pl-0 md:pl-20 pb-8 md:pb-12 last:pb-0"
         >
-          <div className="absolute left-5 top-0 w-6 h-6 rounded-full bg-primary-600 dark:bg-primary-500 border-4 border-white dark:border-[#0F172A] z-10" />
+          <div className="absolute left-5 top-0 w-6 h-6 rounded-full bg-primary-600 dark:bg-primary-500 border-4 border-white dark:border-[#0F172A] z-10 hidden md:block" />
           
           <Card hover className="dark:bg-gray-800/60 dark:backdrop-blur-xl dark:border-gray-700/50">
             <div className="timeline-card flex items-start justify-between mb-4">
