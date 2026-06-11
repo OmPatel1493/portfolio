@@ -8,9 +8,11 @@ import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 
 export async function generateStaticParams() {
-  return projects.map((project) => ({
-    id: project.id,
-  }));
+  return projects
+    .filter((project) => project.longDescription)
+    .map((project) => ({
+      id: project.id,
+    }));
 }
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {

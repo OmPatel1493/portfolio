@@ -10,63 +10,68 @@ export interface Project {
   image?: string;
   featured: boolean;
   category: "ML" | "Web" | "Data" | "Other";
+  /** Lifecycle status — drives badges and whether a detail page is generated. */
+  status?: "live" | "in-progress" | "coming-soon";
+  /** Short feature bullets surfaced on the featured bento tile. */
+  highlights?: string[];
+  year?: string;
 }
 
 export const projects: Project[] = [
   {
-    id: "ml-project-1",
-    title: "Machine Learning Classification Model",
-    description: "Built a classification model with 95% accuracy using ensemble methods",
-    longDescription: "Developed a comprehensive machine learning pipeline for classification tasks using Random Forest and XGBoost algorithms. Implemented feature engineering, hyperparameter tuning, and cross-validation to achieve 95% accuracy on test data.",
-    tags: ["Machine Learning", "Python", "Scikit-learn"],
-    techStack: ["Python", "Scikit-learn", "Pandas", "NumPy", "Matplotlib"],
-    githubUrl: "https://github.com",
+    id: "jobtracker-ai",
+    title: "JobTracker AI",
+    description:
+      "AI-powered job application tracker with resume matching, skill-gap analysis, and intelligent suggestions.",
+    longDescription:
+      "JobTracker AI is a full-stack application that turns a messy job search into a data-driven pipeline. It parses your resume with Google Gemini, scores each application against the job description using a blend of semantic similarity (60%) and skill overlap (40%) for a 0–100 fit score, and surfaces the exact skills you're missing. Applications move through a seven-stage Kanban board with table and analytics views, and the AI generates targeted resume-improvement suggestions per role. The backend is an async FastAPI service backed by MySQL for relational data and Pinecone for vector embeddings.",
+    tags: ["AI/ML", "Full Stack", "Next.js"],
+    techStack: [
+      "Next.js 15",
+      "React 18",
+      "TypeScript",
+      "FastAPI",
+      "Python",
+      "MySQL",
+      "Pinecone",
+      "Google Gemini",
+      "SQLAlchemy",
+      "Tailwind CSS",
+    ],
+    githubUrl: "https://github.com/OmPatel1493/job-tracker",
     featured: true,
-    category: "ML"
+    category: "ML",
+    status: "live",
+    year: "2025",
+    highlights: [
+      "Resume parsing with Gemini 2.0 Flash",
+      "Semantic fit scoring (0–100)",
+      "Kanban board + analytics dashboard",
+      "AI resume-improvement suggestions",
+    ],
   },
   {
-    id: "web-app-1",
-    title: "Full Stack Web Application",
-    description: "Responsive web application with modern UI/UX",
-    longDescription: "Created a full-stack web application using React and Node.js with RESTful API integration. Implemented user authentication, real-time updates, and responsive design for optimal user experience across devices.",
-    tags: ["React", "Node.js", "MongoDB"],
-    techStack: ["React", "Node.js", "Express", "MongoDB", "TailwindCSS"],
-    githubUrl: "https://github.com",
-    liveUrl: "https://example.com",
-    featured: true,
-    category: "Web"
-  },
-  {
-    id: "data-analysis-1",
-    title: "Data Analysis Dashboard",
-    description: "Interactive dashboard for data visualization and insights",
-    longDescription: "Built an interactive data analysis dashboard using Python and Streamlit. Integrated multiple data sources, performed ETL operations, and created dynamic visualizations for business intelligence.",
-    tags: ["Data Analysis", "Python", "Visualization"],
-    techStack: ["Python", "Pandas", "Plotly", "Streamlit", "SQL"],
-    githubUrl: "https://github.com",
+    id: "coming-soon-1",
+    title: "In the Lab",
+    description:
+      "A new project is actively in progress — building, breaking, and iterating right now.",
+    longDescription: "",
+    tags: ["In Progress"],
+    techStack: [],
     featured: false,
-    category: "Data"
+    category: "Other",
+    status: "in-progress",
   },
   {
-    id: "nlp-project-1",
-    title: "Natural Language Processing Tool",
-    description: "NLP-based text analysis and sentiment classification",
-    longDescription: "Developed an NLP tool for sentiment analysis and text classification using transformer models. Achieved state-of-the-art results on benchmark datasets with fine-tuned BERT models.",
-    tags: ["NLP", "Deep Learning", "Transformers"],
-    techStack: ["Python", "PyTorch", "Transformers", "NLTK", "spaCy"],
-    githubUrl: "https://github.com",
-    featured: true,
-    category: "ML"
-  },
-  {
-    id: "api-project-1",
-    title: "RESTful API Service",
-    description: "Scalable API service with authentication and rate limiting",
-    longDescription: "Designed and implemented a RESTful API service with JWT authentication, rate limiting, and comprehensive documentation. Deployed on cloud infrastructure with CI/CD pipeline.",
-    tags: ["Backend", "API", "Cloud"],
-    techStack: ["Node.js", "Express", "PostgreSQL", "Redis", "Docker"],
-    githubUrl: "https://github.com",
+    id: "coming-soon-2",
+    title: "Coming Soon",
+    description:
+      "Always shipping something new. Check back — this slot won't stay empty for long.",
+    longDescription: "",
+    tags: ["Planned"],
+    techStack: [],
     featured: false,
-    category: "Web"
-  }
+    category: "Other",
+    status: "coming-soon",
+  },
 ];

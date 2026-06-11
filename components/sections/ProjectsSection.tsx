@@ -1,10 +1,16 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import {
+  motion,
+  useMotionValue,
+  useMotionTemplate,
+  useSpring,
+} from "framer-motion";
 import { projects } from "@/data/projects";
-import { Github, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react";
+import { Github, ExternalLink, ArrowUpRight, Sparkles, Wrench } from "lucide-react";
 import Link from "next/link";
 import Badge from "@/components/ui/Badge";
 
@@ -12,38 +18,83 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+const featured = projects.find((p) => p.featured) ?? projects[0];
+const placeholders = projects.filter((p) => !p.featured);
+
+/**
+ * Wraps a bento tile with a cursor-following radial "spotlight" glow and a
+ * subtle 3D tilt that reacts to pointer position. Pure presentation.
+ */
+function SpotlightTile({
+  children,
+  className = "",
+  glow = true,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  glow?: boolean;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const mouseX = useMotionValue(-200);
+  const mouseY = useMotionValue(-200);
+
+  // Tilt springs (degrees)
+  const rotateX = useSpring(useMotionValue(0), { stiffness: 150, damping: 18 });
+  const rotateY = useSpring(useMotionValue(0), { stiffness: 150, damping: 18 });
+
+  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = ref.current?.getBoundingClientRect();
+    if (!rect) return;
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    mouseX.set(x);
+    mouseY.set(y);
+    const px = x / rect.width - 0.5;
+    const py = y / rect.height - 0.5;
+    rotateY.set(px * 6);
+    rotateX.set(-py * 6);
+  };
+
+  const handleLeave = () => {
+    mouseX.set(-200);
+    mouseY.set(-200);
+    rotateX.set(0);
+    rotateY.set(0);
+  };
+
+  const spotlight = useMotionTemplate`radial-gradient(220px circle at ${mouseX}px ${mouseY}px, rgba(245,158,11,0.18), transparent 70%)`;
+
+  return (
+    <motion.div
+      ref={ref}
+      onMouseMove={handleMove}
+      onMouseLeave={handleLeave}
+      style={{ rotateX, rotateY, transformPerspective: 900 }}
+      className={`group/tile relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-colors dark:border-gray-700/50 dark:bg-gray-800/60 dark:backdrop-blur-xl hover:border-primary-400/60 dark:hover:border-primary-500/50 ${className}`}
+    >
+      {glow && (
+        <motion.div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-300 group-hover/tile:opacity-100"
+          style={{ background: spotlight }}
+        />
+      )}
+      <div className="relative z-10 flex h-full flex-col">{children}</div>
+    </motion.div>
+  );
+}
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  show: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.08, duration: 0.5, ease: "easeOut" },
+  }),
+};
+
 export default function ProjectsSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-
-  useEffect(() => {
-    const el = scrollContainerRef.current;
-    if (!el) return;
-
-    const update = () => {
-      const { scrollLeft, scrollWidth, clientWidth } = el;
-      setCanScrollLeft(scrollLeft > 4);
-      setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 4);
-    };
-
-    update();
-    el.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    return () => {
-      el.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
-  }, []);
-
-  const scrollBy = (dir: 1 | -1) => {
-    const el = scrollContainerRef.current;
-    if (!el) return;
-    el.scrollBy({ left: dir * el.clientWidth * 0.85, behavior: "smooth" });
-  };
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -51,16 +102,14 @@ export default function ProjectsSection() {
         scrollTrigger: {
           trigger: ".projects-title",
           start: "top 80%",
-          end: "top top",
           toggleActions: "play none none none",
         },
         opacity: 0,
         scale: 0.5,
         duration: 1,
-        ease: "back.out(1.7)"
+        ease: "back.out(1.7)",
       });
 
-      // Text reveal animation
       gsap.from(".projects-reveal-text", {
         scrollTrigger: {
           trigger: ".projects-reveal-text",
@@ -71,30 +120,6 @@ export default function ProjectsSection() {
         clipPath: "inset(0 100% 0 0)",
         duration: 1,
       });
-
-      const isDesktop = window.matchMedia("(min-width: 768px)").matches;
-
-      if (isDesktop && carouselRef.current && sectionRef.current) {
-        const carousel = carouselRef.current;
-        const cardWidth = 380 + 32;
-        const margin = 64;
-        const totalWidth = projects.length * cardWidth;
-        const maxScroll = totalWidth - window.innerWidth + margin * 2;
-
-        ScrollTrigger.create({
-          trigger: sectionRef.current,
-          start: "top top",
-          end: `+=${maxScroll * 3}`,
-          scrub: 1,
-          pin: true,
-          pinSpacing: true,
-          onUpdate: (self) => {
-            gsap.to(carousel, { x: -maxScroll * self.progress, duration: 0 });
-            const index = Math.round(self.progress * (projects.length - 1));
-            setCurrentIndex(index);
-          },
-        });
-      }
     }, sectionRef);
 
     return () => ctx.revert();
@@ -102,118 +127,230 @@ export default function ProjectsSection() {
 
   return (
     <div ref={sectionRef} className="min-h-screen py-20 relative">
-      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 relative z-10">
         <div className="projects-title text-center">
           <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight uppercase text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-400 dark:from-white dark:to-gray-500 mb-4">
             Projects
           </h2>
-          <p className="projects-reveal-text text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8" style={{ clipPath: "inset(0 100% 0 0)" }}>
-            Explore my latest work and creative solutions
+          <p
+            className="projects-reveal-text text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto"
+            style={{ clipPath: "inset(0 100% 0 0)" }}
+          >
+            A focused look at what I&apos;m building — more shipping soon.
           </p>
         </div>
       </div>
 
-      <div className="relative h-[500px]">
-        {canScrollLeft && (
-          <button
-            onClick={() => scrollBy(-1)}
-            aria-label="Previous project"
-            className="md:hidden absolute left-3 top-1/2 -translate-y-1/2 z-20 p-2 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border border-gray-200 dark:border-gray-700/50 rounded-full shadow-lg"
-          >
-            <ChevronLeft className="w-5 h-5 text-gray-900 dark:text-gray-200" />
-          </button>
-        )}
-        {canScrollRight && (
-          <button
-            onClick={() => scrollBy(1)}
-            aria-label="Next project"
-            className="md:hidden absolute right-3 top-1/2 -translate-y-1/2 z-20 p-2 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border border-gray-200 dark:border-gray-700/50 rounded-full shadow-lg"
-          >
-            <ChevronRight className="w-5 h-5 text-gray-900 dark:text-gray-200" />
-          </button>
-        )}
-        <div className={`hidden md:block absolute left-4 top-1/2 -translate-y-1/2 z-10 p-3 bg-white dark:bg-gray-800/80 dark:backdrop-blur-md dark:border dark:border-gray-700/50 rounded-full shadow-lg transition-opacity ${currentIndex === 0 ? 'opacity-30' : 'opacity-100'}`}>
-          <ChevronLeft className="w-6 h-6 text-gray-900 dark:text-gray-200" />
-        </div>
-        <div className={`hidden md:block absolute right-4 top-1/2 -translate-y-1/2 z-10 p-3 bg-white dark:bg-gray-800/80 dark:backdrop-blur-md dark:border dark:border-gray-700/50 rounded-full shadow-lg transition-opacity ${currentIndex === projects.length - 1 ? 'opacity-30' : 'opacity-100'}`}>
-          <ChevronRight className="w-6 h-6 text-gray-900 dark:text-gray-200" />
-        </div>
-
-        <div ref={scrollContainerRef} className="h-full flex items-center overflow-x-auto md:overflow-hidden snap-x snap-mandatory md:snap-none no-scrollbar">
-        <div ref={carouselRef} className="flex gap-4 md:gap-8 px-4 md:pl-16 md:pr-0 py-4">
-          {projects.map((project) => (
-            <div
-              key={project.id}
-              className="snap-center flex-shrink-0 w-[85vw] sm:w-[380px] h-[450px] bg-white dark:bg-gray-800/60 dark:backdrop-blur-xl rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700/50 p-6 flex flex-col group overflow-hidden transition-colors hover:dark:border-primary-500/50 hover:dark:bg-gray-800/80"
-            >
-              {project.image && (
-                <div className="w-full h-48 mb-4 rounded-lg overflow-hidden border dark:border-gray-700/50">
-                  <div className="w-full h-full bg-gradient-to-br from-primary-400 to-primary-600 dark:from-primary-600 dark:to-primary-900 transform group-hover:scale-110 transition-transform duration-500" />
-                </div>
-              )}
-              {project.featured && (
-                <Badge variant="primary" className="mb-4 w-fit dark:bg-primary-900/30 dark:text-primary-300 dark:border dark:border-primary-700/50">
+      <motion.div
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: "-80px" }}
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-5 md:auto-rows-[minmax(180px,auto)]"
+      >
+        {/* ── Featured project: spans 2 cols × 2 rows ── */}
+        <motion.div
+          variants={fadeUp}
+          custom={0}
+          className="md:col-span-2 md:row-span-2"
+        >
+          <SpotlightTile className="h-full">
+            <div className="flex flex-col h-full p-6 md:p-8">
+              <div className="flex items-center justify-between mb-5">
+                <Badge
+                  variant="primary"
+                  className="w-fit gap-1.5 dark:bg-primary-900/30 dark:text-primary-300 dark:border dark:border-primary-700/50"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
                   Featured
                 </Badge>
-              )}
+                <span className="flex items-center gap-1.5 text-xs font-medium text-green-600 dark:text-green-400">
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+                  </span>
+                  Live · {featured.year}
+                </span>
+              </div>
 
-              <Link href={`/projects/${project.id}`}>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                  {project.title}
+              {/* Mock app preview */}
+              <div className="relative w-full h-40 md:h-48 mb-6 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700/50 bg-gradient-to-br from-primary-400/90 to-primary-600 dark:from-primary-600 dark:to-primary-900">
+                <div className="absolute inset-0 p-4 flex gap-2 opacity-90 transition-transform duration-500 group-hover/tile:scale-105">
+                  {["Applied", "Interview", "Offer"].map((col, i) => (
+                    <div
+                      key={col}
+                      className="flex-1 rounded-lg bg-white/15 backdrop-blur-sm p-2 flex flex-col gap-1.5"
+                    >
+                      <span className="text-[10px] font-semibold uppercase tracking-wide text-white/90">
+                        {col}
+                      </span>
+                      {Array.from({ length: 3 - i }).map((_, j) => (
+                        <div
+                          key={j}
+                          className="h-5 rounded bg-white/30"
+                          style={{ width: `${80 - j * 12}%` }}
+                        />
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <Link href={`/projects/${featured.id}`} className="w-fit">
+                <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2 inline-flex items-center gap-2 group-hover/tile:text-primary-600 dark:group-hover/tile:text-primary-400 transition-colors">
+                  {featured.title}
+                  <ArrowUpRight className="w-5 h-5 opacity-0 -translate-x-1 group-hover/tile:opacity-100 group-hover/tile:translate-x-0 transition-all" />
                 </h3>
               </Link>
 
-              <p className="text-gray-600 dark:text-gray-300 mb-4 flex-grow line-clamp-3">
-                {project.description}
+              <p className="text-gray-600 dark:text-gray-300 mb-4 max-w-xl">
+                {featured.description}
               </p>
 
-              <div className="flex flex-wrap gap-2 mb-4">
-                {project.tags.slice(0, 3).map((tag) => (
-                  <Badge className="dark:bg-gray-700/50 dark:text-gray-300" key={tag}>{tag}</Badge>
-                ))}
-              </div>
+              {featured.highlights && (
+                <ul className="grid sm:grid-cols-2 gap-x-5 gap-y-1.5 mb-6">
+                  {featured.highlights.map((h) => (
+                    <li
+                      key={h}
+                      className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400"
+                    >
+                      <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary-500" />
+                      {h}
+                    </li>
+                  ))}
+                </ul>
+              )}
 
-              <div className="flex flex-wrap gap-2 mb-6">
-                {project.techStack.slice(0, 4).map((tech) => (
-                  <span
-                    key={tech}
-                    className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700/50 dark:border dark:border-gray-600/30 text-gray-700 dark:text-gray-300 rounded"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-
-              <div className="flex items-center gap-4 mt-auto">
-                {project.githubUrl && (
+              <div className="flex items-center gap-3 mt-auto pt-2">
+                {featured.githubUrl && (
                   <a
-                    href={project.githubUrl}
+                    href={featured.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gray-900 text-white text-sm font-medium hover:bg-gray-700 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white transition-colors"
                   >
-                    <Github className="w-5 h-5 mr-1" />
-                    <span className="text-sm">Code</span>
+                    <Github className="w-4 h-4" />
+                    Code
                   </a>
                 )}
-                {project.liveUrl && (
+                {featured.liveUrl && (
                   <a
-                    href={project.liveUrl}
+                    href={featured.liveUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 text-sm font-medium hover:border-primary-500 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                   >
-                    <ExternalLink className="w-5 h-5 mr-1" />
-                    <span className="text-sm">Live</span>
+                    <ExternalLink className="w-4 h-4" />
+                    Live Demo
                   </a>
                 )}
+                <Link
+                  href={`/projects/${featured.id}`}
+                  className="inline-flex items-center gap-1 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors ml-auto"
+                >
+                  Details
+                  <ArrowUpRight className="w-4 h-4" />
+                </Link>
               </div>
             </div>
-          ))}
-        </div>
-        </div>
-      </div>
+          </SpotlightTile>
+        </motion.div>
+
+        {/* ── Tech stack: tall tile on the right ── */}
+        <motion.div
+          variants={fadeUp}
+          custom={1}
+          className="md:col-span-1 md:row-span-2"
+        >
+          <SpotlightTile className="h-full">
+            <div className="flex flex-col h-full p-6">
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">
+                Built with
+              </h3>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mb-5">
+                Stack powering {featured.title}
+              </p>
+              <div className="flex flex-wrap gap-2 content-start">
+                {featured.techStack.map((tech, i) => (
+                  <motion.span
+                    key={tech}
+                    variants={fadeUp}
+                    custom={2 + i * 0.4}
+                    className="text-xs px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-700/50 dark:border dark:border-gray-600/30 text-gray-700 dark:text-gray-300 hover:bg-primary-100 hover:text-primary-800 dark:hover:bg-primary-900/40 dark:hover:text-primary-200 transition-colors cursor-default"
+                  >
+                    {tech}
+                  </motion.span>
+                ))}
+              </div>
+              <div className="mt-auto pt-6 flex flex-wrap gap-2">
+                {featured.tags.map((tag) => (
+                  <Badge
+                    key={tag}
+                    className="dark:bg-gray-700/50 dark:text-gray-300"
+                  >
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </SpotlightTile>
+        </motion.div>
+
+        {/* ── Placeholder / coming-soon tiles ── */}
+        {placeholders.map((p, i) => {
+          const inProgress = p.status === "in-progress";
+          return (
+            <motion.div key={p.id} variants={fadeUp} custom={2 + i}>
+              <SpotlightTile className="h-full" glow={false}>
+                <div className="flex flex-col h-full p-6 border-dashed">
+                  <div className="absolute inset-0 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700/60 pointer-events-none" />
+                  <div className="flex items-center gap-2 mb-3">
+                    {inProgress ? (
+                      <Wrench className="w-4 h-4 text-primary-500 animate-pulse" />
+                    ) : (
+                      <Sparkles className="w-4 h-4 text-gray-400" />
+                    )}
+                    <span
+                      className={`text-xs font-semibold uppercase tracking-wider ${
+                        inProgress
+                          ? "text-primary-600 dark:text-primary-400"
+                          : "text-gray-400 dark:text-gray-500"
+                      }`}
+                    >
+                      {inProgress ? "In Progress" : "Coming Soon"}
+                    </span>
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-700 dark:text-gray-300 mb-2">
+                    {p.title}
+                  </h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {p.description}
+                  </p>
+                </div>
+              </SpotlightTile>
+            </motion.div>
+          );
+        })}
+
+        {/* ── "Always building" CTA tile ── */}
+        <motion.div variants={fadeUp} custom={2 + placeholders.length}>
+          <SpotlightTile className="h-full">
+            <a
+              href="https://github.com/OmPatel1493"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col justify-center items-center text-center h-full p-6"
+            >
+              <Github className="w-7 h-7 text-gray-700 dark:text-gray-300 mb-3 transition-transform group-hover/tile:scale-110" />
+              <h3 className="text-base font-bold text-gray-800 dark:text-gray-200 mb-1">
+                More on GitHub
+              </h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Follow along as I ship new work
+              </p>
+            </a>
+          </SpotlightTile>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }
