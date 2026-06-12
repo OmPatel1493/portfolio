@@ -145,12 +145,12 @@ export default function Hero() {
             <a href="/Om_Patel.pdf" download="Om_Patel_Resume.pdf">
               <Button size="lg" className="group w-full sm:w-auto dark:bg-primary-600 dark:hover:bg-primary-500">
                 <Download className="w-5 h-5 mr-2" />
-                Download Resume
+                <span className="uppercase tracking-wide">Download Resume</span>
               </Button>
             </a>
             <a href="#projects">
               <Button variant="outline" size="lg" className="group w-full sm:w-auto dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800">
-                View Projects
+                <span className="uppercase tracking-wide">View Projects</span>
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </a>
