@@ -2,12 +2,13 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { Menu, X, Terminal as TerminalIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Terminal } from "@/components/terminal/Terminal";
+import ScrambleText from "@/components/ui/ScrambleText";
 
 const navItems = [
   { name: "Home", path: "#home" },
@@ -26,7 +27,41 @@ export default function Navbar() {
   const [showHint, setShowHint] = useState(false);
   const [terminalEverOpened, setTerminalEverOpened] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
   const logoRef = useRef<HTMLAnchorElement>(null);
+
+  // Navigate to a homepage section. On "/" we smooth-scroll directly; from any
+  // other route we client-side route home (no full reload, no hash in the URL)
+  // and stash the target so the arrival effect below scrolls to it.
+  const goToSection = (path: string) => {
+    const id = path.replace("#", "");
+    if (pathname === "/") {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      sessionStorage.setItem("scrollTarget", id);
+      router.push("/");
+    }
+  };
+
+  // After client-side navigation back to "/", scroll to the stashed section
+  // once it has mounted (the homepage animates in, so poll briefly for it).
+  useEffect(() => {
+    if (pathname !== "/") return;
+    const target = sessionStorage.getItem("scrollTarget");
+    if (!target) return;
+    sessionStorage.removeItem("scrollTarget");
+
+    let tries = 0;
+    const tryScroll = () => {
+      const el = document.getElementById(target);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+      } else if (tries++ < 40) {
+        setTimeout(tryScroll, 50);
+      }
+    };
+    tryScroll();
+  }, [pathname]);
 
   const handleLogoHover = () => {
     if (!logoRef.current) return;
@@ -123,14 +158,14 @@ export default function Navbar() {
 
             <div className="hidden md:flex items-center space-x-8">
               {navItems.filter((item) => item.name !== "Home").map((item) => {
-                const isActive = activeSection === item.path.replace("#", "");
+                const isActive = pathname === "/" && activeSection === item.path.replace("#", "");
                 return (
                   <a
                     key={item.path}
-                    href={item.path}
+                    href={pathname === "/" ? item.path : `/${item.path}`}
                     onClick={(e) => {
                       e.preventDefault();
-                      document.querySelector(item.path)?.scrollIntoView({ behavior: "smooth" });
+                      goToSection(item.path);
                     }}
                     className={cn(
                       "text-sm font-medium transition-colors hover:text-primary-600 dark:hover:text-primary-400",
@@ -139,7 +174,7 @@ export default function Navbar() {
                         : "text-gray-700 dark:text-gray-300"
                     )}
                   >
-                    {item.name}
+                    <ScrambleText text={item.name} className="uppercase tracking-wide" />
                   </a>
                 );
               })}
@@ -192,15 +227,15 @@ export default function Navbar() {
           >
             <div className="px-4 py-4 space-y-3">
               {navItems.map((item) => {
-                const isActive = activeSection === item.path.replace("#", "");
+                const isActive = pathname === "/" && activeSection === item.path.replace("#", "");
                 return (
                   <a
                     key={item.path}
-                    href={item.path}
+                    href={pathname === "/" ? item.path : `/${item.path}`}
                     onClick={(e) => {
                       e.preventDefault();
                       setIsOpen(false);
-                      document.querySelector(item.path)?.scrollIntoView({ behavior: "smooth" });
+                      goToSection(item.path);
                     }}
                     className={cn(
                       "block px-4 py-2 rounded-lg text-sm font-medium transition-colors",

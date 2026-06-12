@@ -3,31 +3,19 @@
 import { useState } from "react";
 import { projects } from "@/data/projects";
 import ProjectCard from "@/components/sections/ProjectCard";
-import ProjectCarousel from "@/components/sections/ProjectCarousel";
 import Button from "@/components/ui/Button";
 
 const categories = ["All", "ML", "Web", "Data", "Other"];
 
+// Only real projects (placeholders have no detail page / empty longDescription)
+const realProjects = projects.filter((p) => p.longDescription);
+
 export default function ProjectsClient() {
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [viewMode, setViewMode] = useState<"grid" | "carousel">("grid");
 
   const filteredProjects = selectedCategory === "All"
-    ? projects
-    : projects.filter((p) => p.category === selectedCategory);
-
-  if (viewMode === "carousel") {
-    return (
-      <div className="min-h-screen">
-        <div className="fixed top-20 right-4 z-50">
-          <Button onClick={() => setViewMode("grid")} variant="outline" size="sm">
-            Grid View
-          </Button>
-        </div>
-        <ProjectCarousel />
-      </div>
-    );
-  }
+    ? realProjects
+    : realProjects.filter((p) => p.category === selectedCategory);
 
   return (
     <div className="min-h-screen pt-24 pb-16">
@@ -51,12 +39,6 @@ export default function ProjectsClient() {
               {category}
             </Button>
           ))}
-        </div>
-
-        <div className="flex justify-center mb-8">
-          <Button onClick={() => setViewMode("carousel")} variant="outline">
-            🎬 Carousel View
-          </Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
