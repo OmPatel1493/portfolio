@@ -86,8 +86,12 @@ export default function ScrambleText({
       }, speed);
     };
 
-    // A real exit re-arms the effect for the next hover.
+    // A real exit cancels any in-flight decode (otherwise it finishes after
+    // the cursor is gone and latches doneRef, silently eating the next hover)
+    // and re-arms the effect.
     const reset = () => {
+      stop();
+      setDisplay(text);
       doneRef.current = false;
     };
 
