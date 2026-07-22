@@ -1,8 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Github, ExternalLink } from "lucide-react";
-import Link from "next/link";
+import { Github, ExternalLink, ArrowUpRight } from "lucide-react";
 import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
 import { Project } from "@/data/projects";
@@ -10,9 +9,11 @@ import { Project } from "@/data/projects";
 interface ProjectCardProps {
   project: Project;
   index: number;
+  /** Opens the in-place detail overlay for this project. */
+  onSelect: (project: Project) => void;
 }
 
-export default function ProjectCard({ project, index }: ProjectCardProps) {
+export default function ProjectCard({ project, index, onSelect }: ProjectCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -27,11 +28,11 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
           </div>
         )}
 
-        <Link href={`/projects/${project.id}`}>
+        <button type="button" onClick={() => onSelect(project)} className="text-left">
           <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
             {project.title}
           </h3>
-        </Link>
+        </button>
 
         <p className="text-gray-600 dark:text-gray-400 mb-4">{project.description}</p>
 
@@ -64,6 +65,14 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
               <span className="text-sm">Live Demo</span>
             </a>
           )}
+          <button
+            type="button"
+            onClick={() => onSelect(project)}
+            className="flex items-center ml-auto text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+          >
+            <span className="text-sm">Details</span>
+            <ArrowUpRight className="w-4 h-4 ml-1" />
+          </button>
         </div>
       </Card>
     </motion.div>

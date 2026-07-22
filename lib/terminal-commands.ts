@@ -81,7 +81,7 @@ Skills: ${exp.techStack.join(", ")}`).join("\n\n")}`,
 
 ${education.map(edu => `${edu.degree} in ${edu.field}
 ${edu.institution}
-${edu.duration}${edu.gpa ? `\nGPA: ${edu.gpa}` : ""}${edu.achievements ? `\nAchievements:\n${edu.achievements.map(a => `  • ${a}`).join("\n")}` : ""}`).join("\n\n")}`,
+${edu.duration}${edu.gpa ? `\nGPA: ${edu.gpa}` : ""}${edu.coursework ? `\nCoursework: ${edu.coursework.join(", ")}` : ""}`).join("\n\n")}`,
   }),
 
   contact: () => ({

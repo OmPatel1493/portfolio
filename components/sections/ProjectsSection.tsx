@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
@@ -9,10 +9,11 @@ import {
   useMotionTemplate,
   useSpring,
 } from "framer-motion";
-import { projects } from "@/data/projects";
+import { projects, Project } from "@/data/projects";
 import { Github, ExternalLink, ArrowUpRight, Sparkles, Wrench } from "lucide-react";
 import Link from "next/link";
 import Badge from "@/components/ui/Badge";
+import ProjectDetailModal from "@/components/sections/ProjectDetailModal";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -20,6 +21,10 @@ if (typeof window !== "undefined") {
 
 const featured = projects.find((p) => p.featured) ?? projects[0];
 const placeholders = projects.filter((p) => !p.featured);
+// Real projects have a longDescription; placeholders/coming-soon tiles don't.
+// The home section spotlights the featured one, so once there's more than a
+// single real project we surface a "View all" link to the full /projects list.
+const realProjects = projects.filter((p) => p.longDescription);
 
 /**
  * Wraps a bento tile with a cursor-following radial "spotlight" glow and a
@@ -95,6 +100,7 @@ const fadeUp = {
 
 export default function ProjectsSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const [selected, setSelected] = useState<Project | null>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -195,12 +201,16 @@ export default function ProjectsSection() {
                 </div>
               </div>
 
-              <Link href={`/projects/${featured.id}`} className="w-fit">
+              <button
+                type="button"
+                onClick={() => setSelected(featured)}
+                className="w-fit text-left"
+              >
                 <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2 inline-flex items-center gap-2 group-hover/tile:text-primary-600 dark:group-hover/tile:text-primary-400 transition-colors">
                   {featured.title}
                   <ArrowUpRight className="w-5 h-5 opacity-0 -translate-x-1 group-hover/tile:opacity-100 group-hover/tile:translate-x-0 transition-all" />
                 </h3>
-              </Link>
+              </button>
 
               <p className="text-gray-600 dark:text-gray-300 mb-4 max-w-xl">
                 {featured.description}
@@ -243,13 +253,14 @@ export default function ProjectsSection() {
                     Live Demo
                   </a>
                 )}
-                <Link
-                  href={`/projects/${featured.id}`}
+                <button
+                  type="button"
+                  onClick={() => setSelected(featured)}
                   className="inline-flex items-center gap-1 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors ml-auto"
                 >
                   Details
                   <ArrowUpRight className="w-4 h-4" />
-                </Link>
+                </button>
               </div>
             </div>
           </SpotlightTile>
@@ -351,6 +362,20 @@ export default function ProjectsSection() {
           </SpotlightTile>
         </motion.div>
       </motion.div>
+
+      {realProjects.length > 1 && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 flex justify-center relative z-10">
+          <Link
+            href="/projects"
+            className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-medium text-gray-700 dark:text-gray-200 hover:border-primary-500 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+          >
+            View all projects
+            <ArrowUpRight className="w-4 h-4" />
+          </Link>
+        </div>
+      )}
+
+      <ProjectDetailModal project={selected} onClose={() => setSelected(null)} />
     </div>
   );
 }

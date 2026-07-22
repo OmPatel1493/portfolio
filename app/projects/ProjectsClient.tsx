@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { projects } from "@/data/projects";
+import { projects, Project } from "@/data/projects";
 import ProjectCard from "@/components/sections/ProjectCard";
+import ProjectDetailModal from "@/components/sections/ProjectDetailModal";
 import Button from "@/components/ui/Button";
 
 const categories = ["All", "ML", "Web", "Data", "Other"];
@@ -12,6 +13,7 @@ const realProjects = projects.filter((p) => p.longDescription);
 
 export default function ProjectsClient() {
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selected, setSelected] = useState<Project | null>(null);
 
   const filteredProjects = selectedCategory === "All"
     ? realProjects
@@ -43,7 +45,12 @@ export default function ProjectsClient() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProjects.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
+            <ProjectCard
+              key={project.id}
+              project={project}
+              index={index}
+              onSelect={setSelected}
+            />
           ))}
         </div>
 
@@ -53,6 +60,8 @@ export default function ProjectsClient() {
           </div>
         )}
       </div>
+
+      <ProjectDetailModal project={selected} onClose={() => setSelected(null)} />
     </div>
   );
 }

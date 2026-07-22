@@ -33,7 +33,10 @@ export interface Education {
   field: string;
   duration: string;
   gpa?: string;
-  achievements?: string[];
+  /** Relevant coursework, surfaced as chips on the education card. */
+  coursework?: string[];
+  /** Marks the degree currently in progress (drives the accent + live dot). */
+  current?: boolean;
 }
 
 export const education: Education[] = [
@@ -42,17 +45,28 @@ export const education: Education[] = [
     institution: "Concordia University, Montreal, QC",
     degree: "Master of Science",
     field: "Computer Science",
-    duration: "2026 - 2027 (Expected)"
+    duration: "Jan 2026 – Dec 2027 (Expected)",
+    current: true,
+    coursework: [
+      "Algorithm Design Techniques",
+      "Distributed System Design",
+      "Programming and Problem Solving",
+    ],
   },
   {
     id: "edu-2",
     institution: "Parul University, Vadodara, India",
     degree: "Bachelor of Technology",
     field: "Computer Science",
-    duration: "2021 - 2025",
+    duration: "2021 – 2025",
     gpa: "8.31/10",
-    achievements: [
-      "Relevant Courses: Python, C++, Data Structures, Database Topics, Algorithm Design, Machine Learning"
-    ]
-  }
+    coursework: [
+      "Python",
+      "C++",
+      "Data Structures",
+      "Databases",
+      "Algorithm Design",
+      "Machine Learning",
+    ],
+  },
 ];
