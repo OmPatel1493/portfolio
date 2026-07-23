@@ -16,12 +16,16 @@ interface ProjectCardProps {
 export default function ProjectCard({ project, index, onSelect }: ProjectCardProps) {
   return (
     <motion.div
+      className="h-full"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.1 }}
     >
-      <Card hover className={project.featured ? "border-2 border-primary-500" : ""}>
+      <Card
+        hover
+        className={`h-full flex flex-col ${project.featured ? "border-2 border-primary-500" : ""}`}
+      >
         {project.featured && (
           <div className="mb-4">
             <Badge variant="primary">Featured</Badge>
@@ -42,7 +46,7 @@ export default function ProjectCard({ project, index, onSelect }: ProjectCardPro
           ))}
         </div>
 
-        <div className="flex items-center space-x-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex items-center space-x-4 mt-auto pt-4 border-t border-gray-200 dark:border-gray-700">
           {project.githubUrl && (
             <a
               href={project.githubUrl}

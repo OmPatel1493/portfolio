@@ -10,7 +10,7 @@ import {
   useSpring,
 } from "framer-motion";
 import { projects, Project } from "@/data/projects";
-import { Github, ExternalLink, ArrowUpRight, Sparkles, Wrench } from "lucide-react";
+import { Github, ExternalLink, ArrowUpRight, Sparkles } from "lucide-react";
 import Link from "next/link";
 import Badge from "@/components/ui/Badge";
 import ProjectDetailModal from "@/components/sections/ProjectDetailModal";
@@ -20,8 +20,7 @@ if (typeof window !== "undefined") {
 }
 
 const featured = projects.find((p) => p.featured) ?? projects[0];
-const placeholders = projects.filter((p) => !p.featured);
-// Real projects have a longDescription; placeholders/coming-soon tiles don't.
+const secondaryProjects = projects.filter((p) => !p.featured);
 // The home section spotlights the featured one, so once there's more than a
 // single real project we surface a "View all" link to the full /projects list.
 const realProjects = projects.filter((p) => p.longDescription);
@@ -180,22 +179,28 @@ export default function ProjectsSection() {
 
               {/* Mock app preview */}
               <div className="relative w-full h-40 md:h-48 mb-6 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700/50 bg-gradient-to-br from-primary-400/90 to-primary-600 dark:from-primary-600 dark:to-primary-900">
-                <div className="absolute inset-0 p-4 flex gap-2 opacity-90 transition-transform duration-500 group-hover/tile:scale-105">
-                  {["Applied", "Interview", "Offer"].map((col, i) => (
+                <div className="absolute inset-0 p-4 flex flex-col gap-2 opacity-90 transition-transform duration-500 group-hover/tile:scale-105">
+                  <div className="rounded-lg bg-white/15 backdrop-blur-sm px-3 py-2 text-[11px] font-mono text-white/90">
+                    &quot;where is JWT auth implemented?&quot;
+                  </div>
+                  {[
+                    { file: "auth/middleware.py", score: 96 },
+                    { file: "services/jwt_service.py", score: 88 },
+                    { file: "api/routes/login.py", score: 74 },
+                  ].map((r) => (
                     <div
-                      key={col}
-                      className="flex-1 rounded-lg bg-white/15 backdrop-blur-sm p-2 flex flex-col gap-1.5"
+                      key={r.file}
+                      className="flex items-center gap-2 rounded-lg bg-white/10 px-3 py-1.5"
                     >
-                      <span className="text-[10px] font-semibold uppercase tracking-wide text-white/90">
-                        {col}
+                      <span className="flex-1 truncate text-[11px] font-mono text-white/90">
+                        {r.file}
                       </span>
-                      {Array.from({ length: 3 - i }).map((_, j) => (
+                      <div className="h-1.5 w-12 rounded-full bg-white/20 overflow-hidden">
                         <div
-                          key={j}
-                          className="h-5 rounded bg-white/30"
-                          style={{ width: `${80 - j * 12}%` }}
+                          className="h-full rounded-full bg-white/70"
+                          style={{ width: `${r.score}%` }}
                         />
-                      ))}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -306,44 +311,81 @@ export default function ProjectsSection() {
           </SpotlightTile>
         </motion.div>
 
-        {/* ── Placeholder / coming-soon tiles ── */}
-        {placeholders.map((p, i) => {
-          const inProgress = p.status === "in-progress";
-          return (
-            <motion.div key={p.id} variants={fadeUp} custom={2 + i}>
-              <SpotlightTile className="h-full" glow={false}>
-                <div className="flex flex-col h-full p-6 border-dashed">
-                  <div className="absolute inset-0 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700/60 pointer-events-none" />
-                  <div className="flex items-center gap-2 mb-3">
-                    {inProgress ? (
-                      <Wrench className="w-4 h-4 text-primary-500 animate-pulse" />
-                    ) : (
-                      <Sparkles className="w-4 h-4 text-gray-400" />
-                    )}
-                    <span
-                      className={`text-xs font-semibold uppercase tracking-wider ${
-                        inProgress
-                          ? "text-primary-600 dark:text-primary-400"
-                          : "text-gray-400 dark:text-gray-500"
-                      }`}
+        {/* ── Secondary project tiles ── */}
+        {secondaryProjects.map((p, i) => (
+          <motion.div
+            key={p.id}
+            variants={fadeUp}
+            custom={2 + i}
+            className={secondaryProjects.length === 1 ? "md:col-span-2" : ""}
+          >
+            <SpotlightTile className="h-full">
+              <div className="flex flex-col h-full p-6">
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {p.tags.map((tag) => (
+                    <Badge
+                      key={tag}
+                      className="dark:bg-gray-700/50 dark:text-gray-300"
                     >
-                      {inProgress ? "In Progress" : "Coming Soon"}
-                    </span>
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-700 dark:text-gray-300 mb-2">
-                    {p.title}
-                  </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {p.description}
-                  </p>
+                      {tag}
+                    </Badge>
+                  ))}
                 </div>
-              </SpotlightTile>
-            </motion.div>
-          );
-        })}
+
+                <button
+                  type="button"
+                  onClick={() => setSelected(p)}
+                  className="w-fit text-left"
+                >
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2 inline-flex items-center gap-2 group-hover/tile:text-primary-600 dark:group-hover/tile:text-primary-400 transition-colors">
+                    {p.title}
+                    <ArrowUpRight className="w-4 h-4 opacity-0 -translate-x-1 group-hover/tile:opacity-100 group-hover/tile:translate-x-0 transition-all" />
+                  </h3>
+                </button>
+
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                  {p.description}
+                </p>
+
+                <div className="flex items-center gap-4 mt-auto pt-2">
+                  {p.githubUrl && (
+                    <a
+                      href={p.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                    >
+                      <Github className="w-4 h-4" />
+                      Code
+                    </a>
+                  )}
+                  {p.liveUrl && (
+                    <a
+                      href={p.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      Live
+                    </a>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setSelected(p)}
+                    className="inline-flex items-center gap-1 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors ml-auto"
+                  >
+                    Details
+                    <ArrowUpRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </SpotlightTile>
+          </motion.div>
+        ))}
 
         {/* ── "Always building" CTA tile ── */}
-        <motion.div variants={fadeUp} custom={2 + placeholders.length}>
+        <motion.div variants={fadeUp} custom={2 + secondaryProjects.length}>
           <SpotlightTile className="h-full">
             <a
               href="https://github.com/OmPatel1493"

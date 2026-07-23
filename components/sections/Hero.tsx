@@ -148,7 +148,13 @@ export default function Hero() {
                 <span className="uppercase tracking-wide">Download Resume</span>
               </Button>
             </a>
-            <a href="#projects">
+            <a
+              href="#projects"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
               <Button variant="outline" size="lg" className="group w-full sm:w-auto dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800">
                 <span className="uppercase tracking-wide">View Projects</span>
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
@@ -160,25 +166,19 @@ export default function Hero() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 1.1, ease: "easeOut" }}
-            className="mt-8 flex items-center justify-center gap-4"
+            className="mt-8 flex flex-wrap items-center justify-center gap-4"
           >
-            <a
-              href="https://www.linkedin.com/in/ompatel777/"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="LinkedIn"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 text-gray-300 hover:border-amber-500 hover:text-amber-500 transition-colors"
-            >
-              <Linkedin size={22} />
+            <a href="https://www.linkedin.com/in/ompatel777/" target="_blank" rel="noopener noreferrer">
+              <Button variant="outline" size="sm" className="group dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800">
+                <Linkedin className="w-4 h-4 mr-2" />
+                <span className="uppercase tracking-wide">LinkedIn</span>
+              </Button>
             </a>
-            <a
-              href="https://github.com/OmPatel1493"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/30 text-gray-300 hover:border-amber-500 hover:text-amber-500 transition-colors"
-            >
-              <Github size={22} />
+            <a href="https://github.com/OmPatel1493" target="_blank" rel="noopener noreferrer">
+              <Button variant="outline" size="sm" className="group dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800">
+                <Github className="w-4 h-4 mr-2" />
+                <span className="uppercase tracking-wide">GitHub</span>
+              </Button>
             </a>
           </motion.div>
         </div>

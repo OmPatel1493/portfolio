@@ -10,14 +10,45 @@ export interface Project {
   image?: string;
   featured: boolean;
   category: "ML" | "Web" | "Data" | "Other";
-  /** Lifecycle status — drives badges and whether a detail page is generated. */
-  status?: "live" | "in-progress" | "coming-soon";
   /** Short feature bullets surfaced on the featured bento tile. */
   highlights?: string[];
   year?: string;
 }
 
 export const projects: Project[] = [
+  {
+    id: "codelens",
+    title: "CodeLens",
+    description:
+      "AI-powered codebase search and bug localization — ask questions about a repo in plain English and get ranked, explained results.",
+    longDescription:
+      "CodeLens parses a repository into files, classes, and functions using tree-sitter, embeds those code chunks into a vector space, and serves semantic search and bug localization over a REST API and a modern React interface. Ask a natural-language question like \"where is JWT auth implemented?\" and get syntax-highlighted snippets ranked by meaning rather than keywords, or paste a stack trace to get the most likely source files, ranked and explained. It's a deliberate multi-cloud build: compute, Postgres, and web hosting run on Azure, while an embedded ChromaDB vector index is snapshotted to AWS S3 for durable storage — so no separate vector-DB server is required. Authentication is JWT-based with per-user, multi-repo support.",
+    tags: ["AI/ML", "Full Stack", "Developer Tools"],
+    techStack: [
+      "Python",
+      "FastAPI",
+      "SQLAlchemy",
+      "sentence-transformers",
+      "ChromaDB",
+      "tree-sitter",
+      "PostgreSQL",
+      "AWS S3",
+      "React",
+      "TypeScript",
+      "Vite",
+      "Tailwind CSS",
+    ],
+    githubUrl: "https://github.com/OmPatel1493/CODELENS",
+    featured: true,
+    category: "ML",
+    year: "2026",
+    highlights: [
+      "Semantic code search ranked by meaning, not keywords",
+      "Bug localization from pasted stack traces",
+      "Tree-sitter structural indexing (files, classes, functions)",
+      "Multi-cloud: Azure compute/DB + AWS S3 storage",
+    ],
+  },
   {
     id: "jobtracker-ai",
     title: "JobTracker AI",
@@ -39,9 +70,8 @@ export const projects: Project[] = [
       "Tailwind CSS",
     ],
     githubUrl: "https://github.com/OmPatel1493/job-tracker",
-    featured: true,
+    featured: false,
     category: "ML",
-    status: "live",
     year: "2025",
     highlights: [
       "Resume parsing with Gemini 2.0 Flash",
@@ -49,29 +79,5 @@ export const projects: Project[] = [
       "Kanban board + analytics dashboard",
       "AI resume-improvement suggestions",
     ],
-  },
-  {
-    id: "coming-soon-1",
-    title: "In the Lab",
-    description:
-      "A new project is actively in progress — building, breaking, and iterating right now.",
-    longDescription: "",
-    tags: ["In Progress"],
-    techStack: [],
-    featured: false,
-    category: "Other",
-    status: "in-progress",
-  },
-  {
-    id: "coming-soon-2",
-    title: "Coming Soon",
-    description:
-      "Always shipping something new. Check back — this slot won't stay empty for long.",
-    longDescription: "",
-    tags: ["Planned"],
-    techStack: [],
-    featured: false,
-    category: "Other",
-    status: "coming-soon",
   },
 ];
