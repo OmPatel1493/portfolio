@@ -39,6 +39,7 @@ export const projects: Project[] = [
       "Tailwind CSS",
     ],
     githubUrl: "https://github.com/OmPatel1493/CODELENS",
+    liveUrl: "https://codelens-lilac.vercel.app",
     featured: true,
     category: "ML",
     year: "2026",

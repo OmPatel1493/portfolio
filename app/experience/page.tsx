@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { experiences } from "@/data/experience";
-import Timeline from "@/components/sections/Timeline";
+import ExperienceCard from "@/components/sections/ExperienceCard";
 
 export const metadata: Metadata = {
   title: "Experience - Om Patel",
@@ -8,20 +8,11 @@ export const metadata: Metadata = {
 };
 
 export default function ExperiencePage() {
-  const timelineItems = experiences.map((exp) => ({
-    id: exp.id,
-    title: exp.position,
-    subtitle: exp.company,
-    duration: exp.duration,
-    location: exp.location,
-    description: exp.description,
-    techStack: exp.techStack,
-    type: "work" as const
-  }));
+  const experience = experiences[0];
 
   return (
     <div className="min-h-screen pt-24 pb-16">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
             Work Experience
@@ -31,7 +22,7 @@ export default function ExperiencePage() {
           </p>
         </div>
 
-        <Timeline items={timelineItems} />
+        {experience && <ExperienceCard experience={experience} />}
       </div>
     </div>
   );

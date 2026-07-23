@@ -5,7 +5,6 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TypeAnimation } from "react-type-animation";
 import { Download, ArrowRight, Github, Linkedin } from "lucide-react";
-import { motion } from "framer-motion";
 import Button from "@/components/ui/Button";
 
 if (typeof window !== "undefined") {
@@ -18,6 +17,7 @@ export default function Hero() {
   const subtitleRef = useRef<HTMLDivElement>(null);
   const descRef = useRef<HTMLParagraphElement>(null);
   const buttonsRef = useRef<HTMLDivElement>(null);
+  const socialRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -65,8 +65,19 @@ export default function Hero() {
         ease: "back.out(1.7)"
       });
 
+      // Social links — same bounce/scale style as the CTA buttons, continuing the stagger
+      gsap.from(socialRef.current?.children || [], {
+        opacity: 0,
+        y: 30,
+        scale: 0.8,
+        stagger: 0.2,
+        duration: 0.8,
+        delay: 1.5,
+        ease: "back.out(1.7)"
+      });
+
       // Set initial opacity to 1 after animation
-      gsap.set([subtitleRef.current, descRef.current, buttonsRef.current], { opacity: 1 });
+      gsap.set([subtitleRef.current, descRef.current, buttonsRef.current, socialRef.current], { opacity: 1 });
 
       const isDesktop = window.matchMedia("(min-width: 768px)").matches;
 
@@ -84,7 +95,7 @@ export default function Hero() {
       }
 
       // Fade out other content on scroll
-      gsap.to([subtitleRef.current, descRef.current, buttonsRef.current], {
+      gsap.to([subtitleRef.current, descRef.current, buttonsRef.current, socialRef.current], {
         opacity: 0,
         scrollTrigger: {
           trigger: heroRef.current,
@@ -162,10 +173,8 @@ export default function Hero() {
             </a>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 1.1, ease: "easeOut" }}
+          <div
+            ref={socialRef}
             className="mt-8 flex flex-wrap items-center justify-center gap-4"
           >
             <a href="https://www.linkedin.com/in/ompatel777/" target="_blank" rel="noopener noreferrer">
@@ -180,7 +189,7 @@ export default function Hero() {
                 <span className="uppercase tracking-wide">GitHub</span>
               </Button>
             </a>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

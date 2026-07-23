@@ -57,7 +57,7 @@ ${projects.map((p, i) => `${i + 1}. ${p.title} [${p.id}]
    ${p.description}
    Tech: ${p.techStack.slice(0, 4).join(", ")}${p.techStack.length > 4 ? "..." : ""}`).join("\n\n")}
 
-Use 'project <id>' for details (e.g., 'project ml-project-1')`,
+Use 'project <id>' for details (e.g., 'project 1' or 'project ${projects[0]?.id}')`,
   }),
 
   experience: () => ({
@@ -135,8 +135,11 @@ Feel free to reach out!`,
 };
 
 export const getProjectCommand = (id: string): CommandOutput => {
-  const project = projects.find(p => p.id === id);
-  
+  const index = Number(id);
+  const project = Number.isInteger(index) && index >= 1
+    ? projects[index - 1]
+    : projects.find(p => p.id === id);
+
   if (!project) {
     return {
       type: "error",

@@ -3,26 +3,22 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motion } from "framer-motion";
 import { experiences } from "@/data/experience";
-import Timeline from "@/components/sections/Timeline";
+import ExperienceCard from "@/components/sections/ExperienceCard";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+};
+
 export default function ExperienceSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
-
-  const timelineItems = experiences.map((exp) => ({
-    id: exp.id,
-    title: exp.position,
-    subtitle: exp.company,
-    duration: exp.duration,
-    location: exp.location,
-    description: exp.description,
-    techStack: exp.techStack,
-    type: "work" as const
-  }));
+  const experience = experiences[0];
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -36,47 +32,18 @@ export default function ExperienceSection() {
         opacity: 0,
         scale: 0.8,
         duration: 1,
-        ease: "back.out(1.7)"
-      });
-
-      // Animate timeline line
-      gsap.from(".timeline-line", {
-        scrollTrigger: {
-          trigger: ".timeline-line",
-          start: "top 80%",
-          end: "bottom 20%",
-          toggleActions: "play none none none",
-        },
-        scaleY: 0,
-        transformOrigin: "top",
-        duration: 1.5,
-        ease: "power2.out"
-      });
-
-      // Animate each timeline card with alternating directions
-      document.querySelectorAll(".timeline-card").forEach((card, index) => {
-        gsap.from(card, {
-          scrollTrigger: {
-            trigger: card,
-            start: "top 85%",
-            end: "bottom 20%",
-            toggleActions: "play none none none",
-          },
-          opacity: 0,
-          x: index % 2 === 0 ? -100 : 100,
-          rotation: index % 2 === 0 ? -5 : 5,
-          duration: 1,
-          ease: "power3.out"
-        });
+        ease: "back.out(1.7)",
       });
     }, sectionRef);
 
     return () => ctx.revert();
   }, []);
 
+  if (!experience) return null;
+
   return (
-    <div ref={sectionRef} className="min-h-screen py-20 relative">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-white relative z-10">
+    <div ref={sectionRef} className="min-h-screen py-20 relative flex flex-col justify-center">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
         <div className="experience-title text-center mb-16">
           <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight uppercase text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-400 dark:from-white dark:to-gray-500 mb-4">
             Experience
@@ -86,10 +53,14 @@ export default function ExperienceSection() {
           </p>
         </div>
 
-        <div className="relative">
-          <div className="timeline-line absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700 hidden md:block" />
-          <Timeline items={timelineItems} />
-        </div>
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-80px" }}
+          variants={fadeUp}
+        >
+          <ExperienceCard experience={experience} />
+        </motion.div>
       </div>
     </div>
   );
