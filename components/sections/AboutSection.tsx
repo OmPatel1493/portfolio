@@ -28,7 +28,7 @@ const bio: { text: string; accent?: boolean }[] = [
   { text: " to " },
   { text: "real-time analytics dashboards", accent: true },
   { text: ". Right now I'm building, shipping, and " },
-  { text: "open to Summer 2026 internships", accent: true },
+  { text: "open to Summer 2027 internships", accent: true },
   { text: "." },
 ];
 
